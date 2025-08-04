@@ -7,6 +7,7 @@ export default function Home() {
   const webcamref = useRef<Webcam>(null);
   const [image,setimage] = useState<string | null>(null);
   const [aicontent,setiacontent] = useState<string>("");
+  const [usefrontcamera, setusefrontcamera] = useState<boolean>(false);
 
   const capture = async () => {
     const screenshot = webcamref.current?.getScreenshot();
@@ -46,6 +47,10 @@ export default function Home() {
     }
   };
 
+  const videoConstraints = {
+    facingMode: usefrontcamera ? "user" : { exact: "environment" }
+  };
+
   return (
     <div className="p-[50px] flex justify-center flex-col items-center">
       {image ? 
@@ -55,12 +60,16 @@ export default function Home() {
           audio={false}
           ref={webcamref}
           screenshotFormat="image/jpeg"
+          videoConstraints={videoConstraints}
           className="w-full max-w-md rounded shadow"
         />
       }
-
+      {!image ? 
+        <div onClick={() => setusefrontcamera(!usefrontcamera)} className="mt-[10px] w-[25px] h-[25px] cursor-pointer text-white flex justify-center items-center bg-[#018470] p-[5px] rounded-[100%]">al</div>
+        :
+        ""
+      }
       <div onClick={image ? undefined:() => capture()} className="bg-[#018470] text-white p-[5px_50px] rounded-2xl mt-[30px] cursor-pointer">{image ? (aicontent ? "success":"process.."):"take a photo"}</div>
-
       <p className="mt-[20px] w-[350px]">{aicontent}</p>
     </div>
   );
